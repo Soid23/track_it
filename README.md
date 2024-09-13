@@ -1,1 +1,1 @@
-This is a tracking app.
+This is a tracking app.its used to track expenses
