@@ -7,24 +7,41 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
-        h1 {
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem 0;
             text-align: center;
-            color: #333;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 1rem;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        main {
+            padding: 2rem;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
         table, th, td {
             border: 1px solid #ddd;
         }
         th, td {
-            padding: 12px;
+            padding: 1rem;
             text-align: left;
         }
         th {
@@ -81,44 +98,72 @@
         button[type="submit"]:hover {
             background-color: #218838;
         }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
     </style>
 </head>
 <body>
-    <h1>My Bills</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Bill Name</th>
-                <th>Amount</th>
-                <th>Due Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="bill-list">
-            {% for bill in bills %}
-            <tr data-id="{{ bill[0] }}">
-                <td>{{ bill[1] }}</td>
-                <td>{{ bill[2] }}</td>
-                <td>{{ bill[3] }}</td>
-                <td class="actions">
-                    <button onclick="editBill(this)">Edit</button>
-                    <button onclick="removeBill(this)">Remove</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <h2>Add New Bill</h2>
-    <form id="bill-form" method="POST">
-        <label for="bill-name">Bill Name:</label>
-        <input type="text" id="bill-name" name="bill_name" required>
-        <label for="bill-amount">Amount:</label>
-        <input type="number" id="bill-amount" name="amount" required>
-        <label for="due-date">Due Date:</label>
-        <input type="date" id="due-date" name="due_date" required>
-        <button type="submit">Add Bill</button>
-    </form>
-
+    <header>
+        <h1>My Bills</h1>
+        <nav>
+            <ul>
+                <li><a href="/homepage">Home</a></li>
+                <li><a href="/my_bills">My Bills</a></li>
+                <li><a href="/my_expenses">My Expenses</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h2>Bill List</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bill Name</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bill-list">
+                    {% for bill in bills %}
+                    <tr data-id="{{ bill[0] }}">
+                        <td>{{ bill[1] }}</td>
+                        <td>{{ bill[2] }}</td>
+                        <td>{{ bill[3] }}</td>
+                        <td class="actions">
+                            <button onclick="editBill(this)">Edit</button>
+                            <button onclick="removeBill(this)">Remove</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Add New Bill</h2>
+            <form id="bill-form" method="POST">
+                <label for="bill-name">Bill Name:</label>
+                <input type="text" id="bill-name" name="bill_name" required>
+                <label for="bill-amount">Amount:</label>
+                <input type="number" id="bill-amount" name="amount" required>
+                <label for="due-date">Due Date:</label>
+                <input type="date" id="due-date" name="due_date" required>
+                <button type="submit">Add Bill</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 My Expenses Tracker</p>
+    </footer>
     <script>
         document.getElementById('bill-form').addEventListener('submit', function(event) {
             event.preventDefault();

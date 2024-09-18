@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Goal</title>
+</head>
+<body>
+    <h1>Add a New Savings Goal</h1>
+    <form method="post">
+        <label for="goal_name">Goal Name:</label>
+        <input type="text" name="goal_name" required>
+        <br>
+        <label for="target_amount">Target Amount:</label>
+        <input type="number" name="target_amount" step="0.01" required>
+        <br>
+        <label for="current_amount">Current Amount:</label>
+        <input type="number" name="current_amount" step="0.01" required>
+        <br>
+        <button type="submit">Add Goal</button>
+    </form>
+    <a href="{{ url_for('view_goals') }}">Back to Goals</a>
+</body>
+</html>
