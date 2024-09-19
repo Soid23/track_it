@@ -35,16 +35,6 @@ def init_db():
             )
         ''')
         cur.execute('''
-            CREATE TABLE IF NOT EXISTS savings_goals (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER,
-                goal_name TEXT NOT NULL,
-                target_amount REAL NOT NULL,
-                current_amount REAL NOT NULL,
-                FOREIGN KEY(user_id) REFERENCES users(id)
-            )
-        ''')
-        cur.execute('''
             CREATE TABLE IF NOT EXISTS expenses (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER,
@@ -57,6 +47,28 @@ def init_db():
         '''
 
         )
+        cur.execute('''
+                CREATE TABLE IF NOT EXISTS savings_goals (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                goal_name TEXT NOT NULL,
+                target_amount REAL NOT NULL,
+                amount_saved REAL DEFAULT 0,
+                due_date TEXT NOT NULL,
+                user_id INTEGER NOT NULL,
+                FOREIGN KEY(user_id) REFERENCES users(id)
+                )
+                    ''')
+        cur.execute('''
+                CREATE TABLE  IF NOT EXISTS savings_contributions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                goal_id INTEGER NOT NULL,
+                amount REAL NOT NULL,
+                date TEXT NOT NULL,
+                user_id INTEGER NOT NULL,
+                FOREIGN KEY(goal_id) REFERENCES savings_goals(id),
+                FOREIGN KEY(user_id) REFERENCES users(id)
+                )
+                    ''')
         conn.commit()
 
 init_db()
@@ -191,7 +203,7 @@ def logout():
 def expenses():
     conn = sqlite3.connect('track_it.db')
     c = conn.cursor()
-    c.execute("SELECT date, description, amount, category FROM expenses")
+    c.execute("SELECT date, description, amount, category FROM expenses where user_id = ?", (current_user.id,))
     expenses = c.fetchall()
     print(expenses)
     conn.close()
@@ -213,61 +225,49 @@ def add_expense():
     return redirect(url_for('expenses'))
 
 
-@app.route('/savings', methods=['GET', 'POST'])
-def savings():
-    return redirect(url_for('view_goals'))
 
-@app.route('/view_goals')
-@login_required
-def view_goals():
-    user_id = current_user.id
+def add_goal(goal_name, target_amount, due_date, user_id):
     with sqlite3.connect('track_it.db') as conn:
         cur = conn.cursor()
-        cur.execute('SELECT id, goal_name, target_amount, current_amount FROM savings_goals WHERE user_id = ?', (user_id,))
+        cur.execute('INSERT INTO savings_goals (goal_name, target_amount, due_date, user_id) VALUES (?, ?, ?, ?)', 
+                    (goal_name, target_amount, due_date, user_id))
+        conn.commit()
+
+def add_contribution(goal_id, amount, date, user_id):
+    with sqlite3.connect('track_it.db') as conn:
+        cur = conn.cursor()
+        cur.execute('INSERT INTO savings_contributions (goal_id, amount, date, user_id) VALUES (?, ?, ?, ?)', 
+                    (goal_id, amount, date, user_id))
+        cur.execute('UPDATE savings_goals SET amount_saved = amount_saved + ? WHERE id = ?', (amount, goal_id))
+        conn.commit()
+
+@app.route('/savings', methods=['GET', 'POST'])
+@login_required
+def savings():
+    if request.method == 'POST':
+        if 'goal_name' in request.form:
+            # Adding new goal
+            goal_name = request.form['goal_name']
+            target_amount = request.form['target_amount']
+            due_date = request.form['due_date']
+            user_id = current_user.id
+            add_goal(goal_name, target_amount, due_date, user_id)
+        elif 'goal_id' in request.form:
+            # Adding contribution to goal
+            goal_id = request.form['goal_id']
+            amount = request.form['amount']
+            date = request.form['date']
+            user_id = current_user.id
+            add_contribution(goal_id, amount, date, user_id)
+        return redirect(url_for('savings'))
+
+    with sqlite3.connect('track_it.db') as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT id, goal_name, target_amount, amount_saved, due_date FROM savings_goals WHERE user_id = ?', (current_user.id,))
         goals = cur.fetchall()
 
-    goals_data = []
-    for goal in goals:
-        goal_id, goal_name, target_amount, current_amount = goal
-        current_amount = max(current_amount, 0)
-        target_amount = max(target_amount, 0)
-        remaining_amount = max(target_amount - current_amount, 0)
+    return render_template('savings.html', goals=goals)
 
-        fig, ax = plt.subplots()
-        sizes = [current_amount, remaining_amount]
-        colors = ['blue', 'red']
-        labels = ['Current Amount', 'Remaining']
-        ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
-        ax.axis('equal')
-        plt.title(goal_name)
-        
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
-        image_base64 = base64.b64encode(buf.getvalue()).decode('utf8')
-        plt.close()
-        
-        goals_data.append((goal_id, goal_name, image_base64))
-    
-    return render_template('view_goals.html', goals_data=goals_data)
-
-@app.route('/add_goal', methods=['GET', 'POST'])
-@login_required
-def add_goal():
-    if request.method == 'POST':
-        goal_name = request.form['goal_name']
-        target_amount = float(request.form['target_amount'])
-        current_amount = float(request.form['current_amount'])
-        user_id = current_user.id
-        
-        with sqlite3.connect('track_it.db') as conn:
-            cur = conn.cursor()
-            cur.execute('INSERT INTO savings_goals (user_id, goal_name, target_amount, current_amount) VALUES (?, ?, ?, ?)',
-                        (user_id, goal_name, target_amount, current_amount))
-            conn.commit()
-        return redirect(url_for('view_goals'))
-    
-    return render_template('add_goal.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

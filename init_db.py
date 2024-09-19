@@ -20,3 +20,4 @@ with sqlite3.connect('track_it.db') as conn:
             )
         ''')
         conn.commit()
+
