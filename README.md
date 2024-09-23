@@ -30,7 +30,7 @@ Follow these steps to set up the application locally:
 
 Clone the repository:
 
-git clone https://github.com/yourusername/my-expense-tracker.git
+git clone https://github.com/Soid23/track_it.git
 cd my-expense-tracker
 Create a virtual environment (optional but recommended):
 
