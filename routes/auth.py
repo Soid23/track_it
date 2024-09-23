@@ -13,8 +13,7 @@ def register_routes(app):
                 cur = conn.cursor()
                 cur.execute('SELECT * FROM users WHERE email = ?', (email,))
                 user = cur.fetchone()
-                print(user[3])
-                print(password)
+
             
                 if user and user[3] == password:
                     user_obj = User(*user)
@@ -24,7 +23,6 @@ def register_routes(app):
                 else:
                     flash('Login Unsuccessful. Please check email and password', 'danger')
         return render_template('login.html')
-
 
     @app.route('/logout')
     @login_required

@@ -1,166 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Savings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            margin: 0;
-        }
-        nav ul li {
-            margin: 0 1rem;
-        }
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
-        main {
-            display: flex;
-            flex-grow: 1;
-            padding: 2rem;
-            box-sizing: border-box;
-        }
-        .content {
-            flex: 3;
-            margin-right: 2rem;
-        }
-        .sidebar {
-            flex: 1;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 2rem;
-        }
-        table, th, td {
-            border: 1px solid #000000;
-        }
-        th, td {
-            padding: 1rem;
-            text-align: left;
-        }
-        th {
-            background-color: #343b9b;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            background-color: #fff;
-            padding: 1rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            margin-bottom: 2rem;
-        }
-        form label {
-            margin: 0.5rem 0 0.2rem;
-            font-size: 0.9rem;
-        }
-        form input, form button {
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 5px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>My Savings</h1>
-        <nav>
-            <ul>
-                <li><a href="/homepage">Home</a></li>
-                <li><a href="/my_bills">My Bills</a></li>
-                <li><a href="/my_expenses">My Expenses</a></li>
-                <li><a href="/savings">My Savings</a></li>
-                <li><a href="/logout">Logout</a></li>
+{% extends 'base.html' %}
+
+{% block title %}My Savings - Track It{% endblock %}
+
+{% block content %}
+
+<nav class="navbar mt-3 navbar-expand-lg bg-body-tertiary mb-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Track It</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse text-white" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('homepage') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('my_bills') }}">My Bills</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('expenses') }}">My Expenses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('savings') }}">My Savings</a>
+                </li>
             </ul>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>Savings Goals</h2>
-            <table>
+            <a class="btn btn-outline-primary mb-3 mt-3" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<header class="masthead" data-aos="fade-down" data-aos-duration="1000">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                    <h1 class="mb-5">Manage your savings today!</h1>
+                    <p class="lead mb-5">Akiba haiozi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-5 shadow">
+    <div class="form-container" data-aos="fade-up">
+        <h2 class="text-primary mt-3">Savings Goals</h2>
+        <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                <th>Goal</th>
-                <th>Target Amount</th>
-                <th>Amount Saved</th>
-                <th>Progress</th>
-                <th>Due Date</th>
+                    <th>Goal</th>
+                    <th>Target Amount</th>
+                    <th>Amount Saved</th>
+                    <th>Progress</th>
+                    <th>Due Date</th>
                 </tr>
             </thead>
             <tbody>
                 {% for goal in goals %}
                 <tr>
-                <td>{{ goal[1] }}</td>
-                <td>Ksh {{ goal[2] }}</td>
-                <td>Ksh {{ goal[3] }}</td>
-                <td>{{ (goal[3] / goal[2]) * 100 | round(2) }}%</td>
-                <td>{{ goal[4] }}</td>
+                    <td>{{ goal[1] }}</td>
+                    <td>Ksh {{ goal[2] }}</td>
+                    <td>Ksh {{ goal[3] }}</td>
+                    <td>{{ (goal[3] / goal[2]) * 100 | round(2) }}%</td>
+                    <td>{{ goal[4] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
-            </table>
-        </section>
-        <section>
+        </table>
+    </div>
+
+    <button class="btn btn-primary mb-3" id="addSavingsBtn">Add Savings</button>
+
+    <div class="row mb-4" id="savingsForms" style="display: none;"> <!-- Hidden by default -->
+        <div class="col-md-5 form-container me-2" data-aos="fade-up">
             <h2>Add New Goal</h2>
             <form action="/savings" method="post">
                 <label for="goal_name">Goal Name:</label>
-                <input type="text" id="goal_name" name="goal_name" required>
+                <input type="text" id="goal_name" name="goal_name" class="form-control" required>
                 <label for="target_amount">Target Amount:</label>
-                <input type="number" id="target_amount" name="target_amount" step="0.01" required>
+                <input type="number" id="target_amount" name="target_amount" step="0.01" class="form-control" required>
                 <label for="due_date">Due Date:</label>
-                <input type="date" id="due_date" name="due_date" required>
-                <button type="submit">Add Goal</button>
+                <input type="date" id="due_date" name="due_date" class="form-control" required>
+                <button type="submit" class="btn btn-success">Add Goal</button>
             </form>
-        </section>
-        <section>
+        </div>
+
+        <div class="col-md-5 form-container" data-aos="fade-up">
             <h2>Add Money to Goal</h2>
             <form action="/savings" method="post">
                 <label for="goal_id">Goal:</label>
-                <select id="goal_id" name="goal_id" required>
+                <select id="goal_id" name="goal_id" class="form-select" required>
                     {% for goal in goals %}
                     <option value="{{ goal[0] }}">{{ goal[1] }}</option>
                     {% endfor %}
                 </select>
                 <label for="amount">Amount:</label>
-                <input type="number" id="amount" name="amount" step="0.01" required>
+                <input type="number" id="amount" name="amount" step="0.01" class="form-control" required>
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
-                <button type="submit">Add Money</button>
+                <input type="date" id="date" name="date" class="form-control" required>
+                <button type="submit" class="btn btn-success">Add Money</button>
             </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 My Savings Tracker</p>
-    </footer>
-</body>
-</html>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('addSavingsBtn').addEventListener('click', function() {
+        const savingsForms = document.getElementById('savingsForms');
+        if (savingsForms.style.display === 'none') {
+            savingsForms.style.display = 'flex'; // Change to 'flex' for inline display
+            savingsForms.scrollIntoView({ behavior: 'smooth' }); // Scroll to the forms
+        } else {
+            savingsForms.style.display = 'none';
+        }
+    });
+</script>
+
+{% endblock %}

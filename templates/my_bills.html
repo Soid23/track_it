@@ -1,240 +1,185 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Bills</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-        }
-        nav ul li {
-            display: inline;
-            margin: 0 1rem;
-        }
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
-        main {
-            padding: 2rem;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 2rem;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 1rem;
-            text-align: left;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .actions button {
-            margin-right: 5px;
-            padding: 5px 10px;
-            border: none;
-            color: white;
-            background-color: #007bff;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        .actions button:hover {
-            background-color: #0056b3;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        label {
-            margin-bottom: 8px;
-            color: #333;
-        }
-        input[type="text"],
-        input[type="number"],
-        input[type="date"] {
-            padding: 8px;
-            margin-bottom: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button[type="submit"] {
-            padding: 10px 15px;
-            border: none;
-            color: white;
-            background-color: #28a745;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        button[type="submit"]:hover {
-            background-color: #218838;
-        }
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>My Bills</h1>
-        <nav>
-            <ul>
-                <li><a href="/homepage">Home</a></li>
-                <li><a href="/my_bills">My Bills</a></li>
-                <li><a href="/my_expenses">My Expenses</a></li>
-                <li><a href="/savings">My Savings</a></li>
-                <li><a href="/logout">Logout</a></li>
+{% extends 'base.html' %}
+
+{% block title %}My Bills - Track It{% endblock %}
+
+{% block content %}
+
+<nav class="navbar mt-3 navbar-expand-lg bg-body-tertiary mb-3">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Track It</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse text-white" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('homepage') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('my_bills') }}">My Bills</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('expenses') }}">My Expenses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('savings') }}">My Savings</a>
+                </li>
             </ul>
-        </nav>
-    </header>
-    <main>
-        <section>
-            <h2>Bill List</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Bill Name</th>
-                        <th>Amount</th>
-                        <th>Due Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="bill-list">
-                    {% for bill in bills %}
-                    <tr data-id="{{ bill[0] }}">
-                        <td>{{ bill[1] }}</td>
-                        <td>{{ bill[2] }}</td>
-                        <td>{{ bill[3] }}</td>
-                        <td class="actions">
-                            <button onclick="editBill(this)">Edit</button>
-                            <button onclick="removeBill(this)">Remove</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </section>
-        <section>
+            <a class="btn btn-outline-primary mb-3 mt-3" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<header class="masthead" data-aos="fade-down" data-aos-duration="1000">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                    <h1 class="mb-5">Manage Your Bills</h1>
+                    <p class="lead mb-5">Stay on top of your bills!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-5 shadow-lg">
+    <h2 class="text-primary mt-3">Bill List</h2>
+    <table class="table table-striped table-bordered ">
+        <thead>
+            <tr>
+                <th>Bill Name</th>
+                <th>Amount</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="bill-list">
+            {% for bill in bills %}
+            <tr data-id="{{ bill[0] }}">
+                <td>{{ bill[1] }}</td>
+                <td>{{ bill[2] }}</td>
+                <td>{{ bill[3] }}</td>
+                <td class="actions">
+                    <button onclick="editBill(this)">Edit</button>
+                    <button onclick="removeBill(this)">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary mb-3" id="addBillBtn">Add New Bill</button>
+
+    <div class="row mb-4 col-md-5 shadow " id="billForm" style="display: none;"> <!-- Hidden by default -->
+        <div class=" form-container me-2" data-aos="fade-up">
             <h2>Add New Bill</h2>
-            <form id="bill-form" method="POST">
-                <label for="bill-name">Bill Name:</label>
-                <input type="text" id="bill-name" name="bill_name" required>
-                <label for="bill-amount">Amount:</label>
-                <input type="number" id="bill-amount" name="amount" required>
-                <label for="due-date">Due Date:</label>
-                <input type="date" id="due-date" name="due_date" required>
-                <button type="submit">Add Bill</button>
+            <form id="bill-form" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="bill-name" class="form-label">Bill Name:</label>
+                    <input type="text" id="bill-name" name="bill_name" class="form-control" required>
+                    <div class="invalid-feedback">Please provide a bill name.</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="bill-amount" class="form-label">Amount:</label>
+                    <input type="number" id="bill-amount" name="amount" class="form-control" required>
+                    <div class="invalid-feedback">Please enter a valid amount.</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="due-date" class="form-label">Due Date:</label>
+                    <input type="date" id="due-date" name="due_date" class="form-control" required>
+                    <div class="invalid-feedback">Please select a due date.</div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Add Bill</button>
             </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 My Expense Tracker</p>
-    </footer>
-    <script>
-        document.getElementById('bill-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const billName = document.getElementById('bill-name').value;
-            const billAmount = document.getElementById('bill-amount').value;
-            const dueDate = document.getElementById('due-date').value;
-            addBill(billName, billAmount, dueDate);
-            document.getElementById('bill-form').reset();
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('bill-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const billName = document.getElementById('bill-name').value;
+        const billAmount = document.getElementById('bill-amount').value;
+        const dueDate = document.getElementById('due-date').value;
+        addBill(billName, billAmount, dueDate);
+        document.getElementById('bill-form').reset();
+    });
+
+    function addBill(name, amount, dueDate) {
+        fetch('/my_bills', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `bill_name=${encodeURIComponent(name)}&amount=${encodeURIComponent(amount)}&due_date=${encodeURIComponent(dueDate)}`
+        }).then(response => {
+            if (response.ok) {
+                const billList = document.getElementById('bill-list');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td>${amount}</td>
+                    <td>${dueDate}</td>
+                    <td class="actions">
+                        <button onclick="editBill(this)">Edit</button>
+                        <button onclick="removeBill(this)">Remove</button>
+                    </td>
+                `;
+                billList.appendChild(row);
+            } else {
+                console.error('Failed to add bill.');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
         });
+    }
 
-        function addBill(name, amount, dueDate) {
-            fetch('/my_bills', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `bill_name=${encodeURIComponent(name)}&amount=${encodeURIComponent(amount)}&due_date=${encodeURIComponent(dueDate)}`
-            }).then(response => {
-                if (response.ok) {
-                    const billList = document.getElementById('bill-list');
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${name}</td>
-                        <td>${amount}</td>
-                        <td>${dueDate}</td>
-                        <td class="actions">
-                            <button onclick="editBill(this)">Edit</button>
-                            <button onclick="removeBill(this)">Remove</button>
-                        </td>
-                    `;
-                    billList.appendChild(row);
-                } else {
-                    console.error('Failed to add bill.');
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-            });
+    function editBill(button) {
+        const row = button.parentElement.parentElement;
+        const name = row.children[0].innerText;
+        const amount = row.children[1].innerText;
+        const dueDate = row.children[2].innerText;
+        document.getElementById('bill-name').value = name;
+        document.getElementById('bill-amount').value = amount;
+        document.getElementById('due-date').value = dueDate;
+        removeBill(button);
+    }
+
+    function removeBill(button) {
+        const row = button.parentElement.parentElement;
+        const billId = row.getAttribute('data-id');
+
+        fetch('/remove_bill', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bill_id: billId })
+        }).then(response => {
+            if (response.ok) {
+                row.remove();
+            } else {
+                console.error('Failed to delete bill.');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Toggle the visibility of the bill form
+    document.getElementById('addBillBtn').addEventListener('click', function() {
+        const billForm = document.getElementById('billForm');
+        if (billForm.style.display === 'none') {
+            billForm.style.display = 'block'; // Show the form
+            billForm.scrollIntoView({ behavior: 'smooth' }); // Scroll to the form
+        } else {
+            billForm.style.display = 'none'; // Hide the form
         }
+    });
+</script>
 
-        function editBill(button) {
-            const row = button.parentElement.parentElement;
-            const name = row.children[0].innerText;
-            const amount = row.children[1].innerText;
-            const dueDate = row.children[2].innerText;
-            document.getElementById('bill-name').value = name;
-            document.getElementById('bill-amount').value = amount;
-            document.getElementById('due-date').value = dueDate;
-            removeBill(button);
-        }
-
-        function removeBill(button) {
-            const row = button.parentElement.parentElement;
-            const billId = row.getAttribute('data-id');
-
-            fetch('/remove_bill', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ bill_id: billId })
-            }).then(response => {
-                if (response.ok) {
-                    row.remove();
-                } else {
-                    console.error('Failed to delete bill.');
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
-</body>
-</html>
+{% endblock %}
