@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %} Login - Track It{% endblock %}
+{% set show_navbar = False %}
+
+{% block content %}
+
+<div class="container logIn " data-aos="fade-up" data-aos-duration="1200">
+    <h1>Login</h1>
+    <form method="post">
+        <label for="email">Email:</label>
+        <input type="email" name="email" required>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <div class="register-link">
+        <a href="{{ url_for('register') }}">Don't have an account? Register here</a>
+    </div>
+</div>
+
+
+{% endblock %}
+

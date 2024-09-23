@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Expense Manager - Track It{% endblock %}
+
+{% block content %}
+        <!-- Masthead-->
+        <header class="masthead" data-aos="fade-down" data-aos-duratio="1000">
+            <div class="container position-relative">
+                <div class="row justify-content-center">
+                    <div class="col-xl-6">
+                        <div class="text-center text-white">
+                            <h1 class="mb-5">Register with us today!</h1>
+                            <p>
+                                
+                            </p>
+
+                            <a href="{{ url_for('register') }}" class="large-button" data-aos="zoom-in" data-aos-delay="200">
+                                <div class="image-container">
+                                    <h3 class="">GET STARTED</h3>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Icons Grid-->
+        <section class="features-icons bg-light text-center" data-aos="fade-up">
+            <div class="container">
+                <div class="row">
+                    <div class="shadow col-lg-4" data-aos="fade-right" data-aos-duration="900">
+                        <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                            <a href="{{ url_for('expenses') }}" class="small-image">
+                                <div class="image-container rounded shadow">
+                                    <img src="{{ url_for('static', filename='images/expenditure.jpeg') }}" alt="Expenditure">
+                                </div>
+                            </a>
+                            <h3 class="">EXPENDITURE</h3>
+                            <p class="lead mb-0">Manage Your expenses today</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 shadow  " data-aos="fade-up" data-aos-duration="800">
+                        <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                            <a href="{{ url_for('savings') }}" class="small-image">
+                                <div class="image-container rounded shadow">
+                                    <img src="{{ url_for('static', filename='images/savings.jpeg') }}" alt="Savings">
+                                </div>
+                            </a>
+                            <h3>Savings </h3>
+                            <p class="lead mb-0">Manage your savings</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 shadow " data-aos="fade-left" data-aos-duration="900">
+                        <div class="features-icons-item mx-auto mb-0 mb-lg-3">
+                            <a href="{{ url_for('my_bills') }}" class="small-image">
+                                <div class="image-container rounded shadow">
+                                    <img src="{{ url_for('static', filename='images/bills.jpeg') }}" alt="">
+                                </div>
+                            </a>
+                            <h3>Bills</h3>
+                            <p class="lead mb-0">Manage your Bills </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+{% endblock %}
